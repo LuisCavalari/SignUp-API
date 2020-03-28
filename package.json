@@ -1,0 +1,7 @@
+{
+  "name": "clean-arch-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Luis Cavalari <lfelipe.felipe4@gmail.com>",
+  "license": "MIT"
+}
