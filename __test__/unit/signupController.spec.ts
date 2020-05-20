@@ -1,9 +1,28 @@
 import { SignUpController } from '../../src/presentation/controllers/signup'
-import { EmailValidator } from '../../src/presentation/protocols/emailValidator'
+import { EmailValidator } from '../../src/presentation/protocols/'
 import { InvalidParamError, ServerError, MissingParamError } from '../../src/presentation/errors/'
+import { AddAccountModel, AddAccount } from '../../src/domain/useCases/addAccount'
+import { AccountModel } from '../../src/domain/models/account'
+
 interface SutType {
   sut: SignUpController
   emailValidator: EmailValidator
+  addAccount: AddAccount
+}
+
+const makeAddAccount = (): AddAccount => {
+  class AddAccountStub implements AddAccount {
+    add (account: AddAccountModel): AccountModel {
+      const fakeAccount = {
+        id: 'valid_id',
+        name: 'valid_name',
+        email: 'valid_email',
+        password: 'valid_password'
+      }
+      return fakeAccount
+    }
+  }
+  return new AddAccountStub()
 }
 
 const makeEmailValidator = (): EmailValidator => {
@@ -17,10 +36,12 @@ const makeEmailValidator = (): EmailValidator => {
 
 const makeSut = (): SutType => {
   const emailValidator = makeEmailValidator()
-  const sut = new SignUpController(emailValidator)
+  const addAccount = makeAddAccount()
+  const sut = new SignUpController(emailValidator, addAccount)
   return {
     sut,
-    emailValidator
+    emailValidator,
+    addAccount
   }
 }
 
@@ -146,5 +167,24 @@ describe('SignUp Controller', () => {
     const httpResponse = sut.handle(httpRequest)
 
     expect(httpResponse.body).toEqual(new InvalidParamError('passwordConfirmation'))
+  })
+
+  test('Should call AddAccount with correct values ', () => {
+    const { sut, addAccount } = makeSut()
+    const addAccountSpy = jest.spyOn(addAccount, 'add')
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@email.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password'
+      }
+    }
+    sut.handle(httpRequest)
+    expect(addAccountSpy).toHaveBeenCalledWith({
+      name: 'any_name',
+      email: 'any_email@email.com',
+      password: 'any_password'
+    })
   })
 })
