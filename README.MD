@@ -1,7 +1,7 @@
 # SignUp API
 
 ## What is it?
-As the name say, it is a very simple api to register users. It built with Typescript and  Express.
+As the name say, it is a  api to register surveys. It built with Typescript and  Express.
 
 ## What's the objective of this project ?
 The objective of this project is to pratice Typescript and TDD, to improve the quality of my code. In addition, I want to test some CI technologies.
