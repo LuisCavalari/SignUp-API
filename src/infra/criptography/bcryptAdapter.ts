@@ -9,7 +9,7 @@ export class BcryptAdapter implements Encrypter {
 
   async encrypt (value: any): Promise<string> {
     const { salt } = this
-    await bcrypt.hash(value, salt)
-    return new Promise(resolve => resolve('hashed_value'))
+    const hash = await bcrypt.hash(value, salt)
+    return hash
   }
 }
