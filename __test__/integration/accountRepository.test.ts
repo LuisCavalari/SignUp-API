@@ -8,6 +8,11 @@ describe('Account repository', () => {
     await mongoHelper.desconect()
   })
 
+  beforeEach(async () => {
+    const accountCollection = mongoHelper.getCollection('accounts')
+    await accountCollection.deleteMany({})
+  })
+
   test('Should return an account on sucess', async () => {
     const sut = new AccountMongoRepository()
     const fakeAccount = {
