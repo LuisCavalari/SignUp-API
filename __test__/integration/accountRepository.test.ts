@@ -1,5 +1,10 @@
 import { mongoHelper } from '../../src/infra/database/mongodb/helper/mongoDbHelper'
 import AccountMongoRepository from '../../src/infra/database/mongodb/accountRepository/account'
+
+interface SutType {
+  sut: AccountMongoRepository
+}
+
 describe('Account repository', () => {
   beforeAll(async () => {
     await mongoHelper.connect(process.env.MONGO_URL)
@@ -13,8 +18,15 @@ describe('Account repository', () => {
     await accountCollection.deleteMany({})
   })
 
-  test('Should return an account on sucess', async () => {
+  const makeSut = (): SutType => {
     const sut = new AccountMongoRepository()
+    return {
+      sut
+    }
+  }
+
+  test('Should return an account on sucess', async () => {
+    const { sut } = makeSut()
     const fakeAccount = {
       name: 'any_name',
       email: 'any_email',
